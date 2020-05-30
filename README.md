@@ -1,8 +1,6 @@
-# Optimización de tiempos de entrega de las plataformas de delivery
+# Optimización de tiempos de entrega en plataformas de delivery
 
-Repositorio del TP Nº 6 de Simulación - UTN - FRBA
-
-Grupo 03 - 1ºC 2020.
+TP Nº 6 de Simulación - UTN - FRBA. Grupo 03 - 1ºC 2020.
 
 ## Integrantes
 
