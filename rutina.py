@@ -4,8 +4,11 @@ from random import randint
 
 def usage():
     print('''
-    Usage: 
+    Uso: 
         python3 rutina.py $cantidadRepartidores $radioEntrega $tiempoFinal
+
+    Ejemplo: 
+        python3 rutina.py 2 5 1000
     '''
     )
 
@@ -25,7 +28,7 @@ def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     return menorTiempoComprometido
 
 def main():
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 4:
         usage()
         exit(1)
 
