@@ -2,6 +2,7 @@
 import sys
 from random import randint
 
+
 def usage():
     print('''
     Uso: 
@@ -12,20 +13,24 @@ def usage():
     '''
     )
 
+
 def generarIntervaloPedido(tiempoActual):
     # Acá iría la FDP de intervaloPedido
     intervaloPedidoRandom = randint(5,20)
     return intervaloPedidoRandom
+
 
 def generarTiempoEntrega(radioEntrega):
     # Acá iría la FDP de tiempoEntrega
     tiempoEntregaRandom = randint(10,20) * radioEntrega
     return tiempoEntregaRandom
 
+
 def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     # Busco el repartidor con menor tiempo comprometido
     menorTiempoComprometido = tiempoComprometidoRepartidores.index(min(tiempoComprometidoRepartidores))
     return menorTiempoComprometido
+
 
 def main():
     if len(sys.argv) < 4:
@@ -38,7 +43,9 @@ def main():
     tiempoFinal = int(sys.argv[3])
     print("")
     print("#### Simulando con cantidad de repartidores = {0} y radio de entrega = {1} km #### ".format(cantidadRepartidores, radioEntrega))
-    
+    print("")
+    print ("        ...        ")
+    print("")
     # Seteo condiciones iniciales
     tiempoActual = tiempoProximoPedido = 0
     cantidadEntregas = tiempoTotalEspera = 0 
@@ -85,7 +92,7 @@ def main():
             tiempoComprometidoRepartidores[repartidor] = tiempoComprometidoRepartidores[repartidor] + tiempoEntrega
             tiempoTotalEspera = tiempoTotalEspera + tiempoComprometidoRepartidores[repartidor] - tiempoActual
             cantidadEntregas = cantidadEntregas + 1
-    
+
     ## Fin simulación ##
 
     # Imprimo resultados
