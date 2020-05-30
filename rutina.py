@@ -2,6 +2,7 @@
 import sys
 from random import randint
 
+listaDeTAs = []
 
 def usage():
     print('''
@@ -31,6 +32,13 @@ def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     menorTiempoComprometido = tiempoComprometidoRepartidores.index(min(tiempoComprometidoRepartidores))
     return menorTiempoComprometido
 
+def calcularMaximoTA():
+    #Calcula el maximo tiempo de atencion en el que cae el 90% de los pedidos
+    print("Array de TAs:")
+    print(listaDeTAs)
+    listaDeTAs.sort()
+    index = round(len(listaDeTAs) * 0.9) - 1
+    return listaDeTAs[index]
 
 def main():
     if len(sys.argv) < 4:
@@ -73,6 +81,7 @@ def main():
 
         # Genero intervalo de tiempo de entrega
         tiempoEntrega = generarTiempoEntrega(radioEntrega)
+        listaDeTAs.append(tiempoEntrega)
         print("Intervalo entrega = {0}".format(tiempoEntrega))
 
         for i in range(cantidadRepartidores):
@@ -96,11 +105,11 @@ def main():
     ## Fin simulación ##
 
     # Imprimo resultados
-    tiempoMedioEspera = round(tiempoTotalEspera / cantidadEntregas)
+    tiempoMedioEspera = calcularMaximoTA()
     print("")
     print("#### Resultados con cantidad de repartidores = {0} y radio de entrega = {1} km #### ".format(cantidadRepartidores, radioEntrega))####")
     print("")
-    print("Tiempo medio de espera = {0} min".format(tiempoMedioEspera))
+    print("Tiempo maximo de atencion en el 90% de pedidos = {0} min".format(tiempoMedioEspera))
     print("Cantidad de entregas = {0}".format(cantidadEntregas))
 
     if tiempoMedioEspera < 35:
@@ -112,3 +121,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
