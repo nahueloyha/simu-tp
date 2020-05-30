@@ -85,13 +85,13 @@ def main():
             # Hay repartidores ociosos -> toman pedido inmediatamente
             tiempoComprometidoRepartidores[repartidor] = tiempoActual + tiempoEntrega
             tiempoTotalEspera = tiempoTotalEspera + tiempoEntrega
-            cantidadEntregas = cantidadEntregas + 1
+            cantidadEntregas += 1
 
         else:
             # No hay repartidores ociosos -> el pedido se demora
             tiempoComprometidoRepartidores[repartidor] = tiempoComprometidoRepartidores[repartidor] + tiempoEntrega
             tiempoTotalEspera = tiempoTotalEspera + tiempoComprometidoRepartidores[repartidor] - tiempoActual
-            cantidadEntregas = cantidadEntregas + 1
+            cantidadEntregas += 1
 
     ## Fin simulación ##
 
