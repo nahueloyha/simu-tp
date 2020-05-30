@@ -5,7 +5,7 @@ from random import randint
 def usage():
     print('''
     Usage: 
-        python3 rutina.py $cantidadRepartidores $radioEntrega
+        python3 rutina.py $cantidadRepartidores $radioEntrega $tiempoFinal
     '''
     )
 
@@ -25,19 +25,19 @@ def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     return menorTiempoComprometido
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         usage()
         exit(1)
 
     # Leo argumentos
     cantidadRepartidores = int(sys.argv[1])
     radioEntrega = int(sys.argv[2])
+    tiempoFinal = int(sys.argv[3])
     print("")
     print("#### Simulando con cantidad de repartidores = {0} y radio de entrega = {1} km #### ".format(cantidadRepartidores, radioEntrega))
     
     # Seteo condiciones iniciales
     tiempoActual = tiempoProximoPedido = 0
-    tiempoFinal = 1000
     cantidadEntregas = tiempoTotalEspera = 0 
     tiempoComprometidoRepartidores = []
 
