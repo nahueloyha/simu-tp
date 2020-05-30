@@ -81,7 +81,6 @@ def main():
 
         # Genero intervalo de tiempo de entrega
         tiempoEntrega = generarTiempoEntrega(radioEntrega)
-        listaDeTAs.append(tiempoEntrega)
         print("Intervalo entrega = {0}".format(tiempoEntrega))
 
         for i in range(cantidadRepartidores):
@@ -90,9 +89,11 @@ def main():
         # Busco menor tiempo comprometido
         repartidor = buscarMenorTiempoComprometido(tiempoComprometidoRepartidores)
 
+        
         if tiempoActual > tiempoComprometidoRepartidores[repartidor]:
             # Hay repartidores ociosos -> toman pedido inmediatamente
             tiempoComprometidoRepartidores[repartidor] = tiempoActual + tiempoEntrega
+            listaDeTAs.append(tiempoEntrega)
             tiempoTotalEspera = tiempoTotalEspera + tiempoEntrega
             cantidadEntregas += 1
 
@@ -100,6 +101,7 @@ def main():
             # No hay repartidores ociosos -> el pedido se demora
             tiempoComprometidoRepartidores[repartidor] = tiempoComprometidoRepartidores[repartidor] + tiempoEntrega
             tiempoTotalEspera = tiempoTotalEspera + tiempoComprometidoRepartidores[repartidor] - tiempoActual
+            listaDeTAs.append((tiempoComprometidoRepartidores[repartidor] - tiempoActual))
             cantidadEntregas += 1
 
     ## Fin simulación ##
