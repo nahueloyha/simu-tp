@@ -1,6 +1,7 @@
 # Optimización de tiempos de entrega en plataformas de delivery
 
-TP Nº 6 de Simulación - UTN - FRBA. Grupo 03 - 1ºC 2020.
+Trabajo Práctico Nº 6 - 1º Cuat. 2020
+Grupo 03 - Simulación - UTN - FRBA
 
 ## Integrantes
 
@@ -28,3 +29,7 @@ $cantidadRepartidores: número entero, representa personas
 $radioEntrega: número entero, representa kilómetros
 $tiempoFinal: número entero, representa duración de la simulación
 ```
+
+## Ejemplo
+
+Simular 2 repartidores, con 5 kilómetros de radio de entrega y por 1000 minutos: `python3 rutina.py 2 5 1000`
