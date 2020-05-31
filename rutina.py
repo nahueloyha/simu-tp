@@ -2,15 +2,14 @@
 import sys
 from random import randint
 
-listaDeTAs = []
-
 def usage():
     print('''
     Uso: 
-        python3 rutina.py $cantidadRepartidores $radioEntrega $tiempoFinal
+        python3 rutina.py $cantidadRepartidores $radioEntrega $tiempoFinal [debug]
 
     Ejemplo: 
         python3 rutina.py 2 5 1000
+        python3 rutina.py 4 20 10000 debug
     '''
     )
 
@@ -29,13 +28,11 @@ def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     menorTiempoComprometido = tiempoComprometidoRepartidores.index(min(tiempoComprometidoRepartidores))
     return menorTiempoComprometido
 
-def calcularMaximoTA():
-    #Calcula el maximo tiempo de atencion en el que cae el 90% de los pedidos
-    # print("Array de TAs:")
-    # print(listaDeTAs)
-    listaDeTAs.sort()
-    index = round(len(listaDeTAs) * 0.9) - 1
-    return listaDeTAs[index]
+def calcularMaximoTiempoEntrega(listaTiemposEntrega):
+    # Calcula el máximo tiempo de atención en el que cae el 90% de los pedidos
+    listaTiemposEntrega.sort()
+    index = round(len(listaTiemposEntrega) * 0.9) - 1
+    return listaTiemposEntrega[index]
 
 def main():
     if len(sys.argv) < 4:
@@ -47,19 +44,21 @@ def main():
     radioEntrega = int(sys.argv[2])
     tiempoFinal = int(sys.argv[3])
 
-    # Checkeo modo debug
+    # Chequeo modo debug
     if len(sys.argv) == 5: 
         if sys.argv[4] == "debug": 
             debug = True
+            print("\nModo debug habilitado")
     else: 
             debug = False
 
-    print("\n#### Corriendo simulación con cantidad de repartidores = {0} y radio de entrega = {1} km #### \n".format(cantidadRepartidores, radioEntrega))
+    print("\n#### Corriendo simulación con cantidad de repartidores = {0} y radio de entrega = {1} km ####".format(cantidadRepartidores, radioEntrega))
     
     # Seteo condiciones iniciales
     tiempoActual = tiempoProximoPedido = 0
     cantidadEntregas = tiempoTotalEspera = 0 
     tiempoComprometidoRepartidores = []
+    listaTiemposEntrega = []
 
     for i in range(cantidadRepartidores):
         tiempoComprometidoRepartidores.append(randint(10,30))
@@ -67,7 +66,7 @@ def main():
 
     ## Inicio simulación ##
 
-    if not debug: print("Entregas: ", end = "")
+    if not debug: print("\nEntregas: ", end = "")
     
     while (tiempoActual < tiempoFinal):
 
@@ -98,7 +97,7 @@ def main():
         if tiempoActual > tiempoComprometidoRepartidores[repartidor]:
             # Hay repartidores ociosos -> toman pedido inmediatamente
             tiempoComprometidoRepartidores[repartidor] = tiempoActual + tiempoEntrega
-            listaDeTAs.append(tiempoEntrega)
+            listaTiemposEntrega.append(tiempoEntrega)
             tiempoTotalEspera = tiempoTotalEspera + tiempoEntrega
             cantidadEntregas += 1
 
@@ -106,23 +105,25 @@ def main():
             # No hay repartidores ociosos -> el pedido se demora
             tiempoComprometidoRepartidores[repartidor] = tiempoComprometidoRepartidores[repartidor] + tiempoEntrega
             tiempoTotalEspera = tiempoTotalEspera + tiempoComprometidoRepartidores[repartidor] - tiempoActual
-            listaDeTAs.append((tiempoComprometidoRepartidores[repartidor] - tiempoActual))
+            listaTiemposEntrega.append((tiempoComprometidoRepartidores[repartidor] - tiempoActual))
             cantidadEntregas += 1
 
     ## Fin simulación ##
 
     # Calculo resultados
-    tiempoMedioEspera = calcularMaximoTA()
-    if tiempoMedioEspera < 35: 
+    tiempoMaximoEspera = calcularMaximoTiempoEntrega(listaTiemposEntrega)
+    if debug: print("\nLista de tiempos de entregas: ", listaTiemposEntrega, end = "")
+    
+    if tiempoMaximoEspera < 35: 
         resultadoExitoso = "SI"
     else:
         resultadoExitoso = "NO"
 
     # Imprimo resultados
     print("\n\n#### Resultados con cantidad de repartidores = {0} y radio de entrega = {1} km #### \n".format(cantidadRepartidores, radioEntrega))####")
-    print("Tiempo máximo de atención en el 90% de pedidos = {0} min".format(tiempoMedioEspera))
+    print("Tiempo máximo de atención en el 90% de pedidos = {0} min".format(tiempoMaximoEspera))
     print("Cantidad de entregas = {0}".format(cantidadEntregas))
-    print("Conclusión: {0} se logra tiempo medio de espera menor a 35 min\n".format(resultadoExitoso))
+    print("Conclusión: {0} se logra tiempo máximo de espera menor a 35 min\n".format(resultadoExitoso))
 
 if __name__ == "__main__":
     try: 
