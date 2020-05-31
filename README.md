@@ -22,15 +22,18 @@ Nahuel Oyhanarte | 154.566-8
 
 2. Entrar al directorio: `cd simu-tp`
 
-3. Ejecutar la simulación: `python3 rutina.py $cantidadRepartidores $radioEntrega $tiempoFinal`
+3. Ejecutar la simulación: `python3 rutina.py $cantidadRepartidores $radioEntrega $tiempoFinal [debug]`
 
 ## Variables
-```
+
+```bash
 $cantidadRepartidores: número entero, representa personas
 $radioEntrega: número entero, representa kilómetros
 $tiempoFinal: número entero, representa duración de la simulación
+debug: string literal "debug", opcional, para ejecutar en modo debug/verbose (deshabilitado x default)
 ```
 
 ## Ejemplo
 
-Simular 2 repartidores, con 5 kilómetros de radio de entrega y por 1000 minutos: `python3 rutina.py 2 5 1000`
+* Simular 2 repartidores, con 5 kilómetros de radio de entrega y por 1000 minutos: `python3 rutina.py 2 5 1000`
+* Simular 4 repartidores, con 20 kilómetros de radio de entrega, por 10000 minutos y en modo debug: `python3 rutina.py 4 20 10000 debug`

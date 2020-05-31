@@ -14,18 +14,15 @@ def usage():
     '''
     )
 
-
 def generarIntervaloPedido(tiempoActual):
     # Acá iría la FDP de intervaloPedido
     intervaloPedidoRandom = randint(5,20)
     return intervaloPedidoRandom
 
-
 def generarTiempoEntrega(radioEntrega):
     # Acá iría la FDP de tiempoEntrega
     tiempoEntregaRandom = randint(10,20) * radioEntrega
     return tiempoEntregaRandom
-
 
 def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     # Busco el repartidor con menor tiempo comprometido
@@ -34,8 +31,8 @@ def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
 
 def calcularMaximoTA():
     #Calcula el maximo tiempo de atencion en el que cae el 90% de los pedidos
-    print("Array de TAs:")
-    print(listaDeTAs)
+    # print("Array de TAs:")
+    # print(listaDeTAs)
     listaDeTAs.sort()
     index = round(len(listaDeTAs) * 0.9) - 1
     return listaDeTAs[index]
@@ -49,11 +46,16 @@ def main():
     cantidadRepartidores = int(sys.argv[1])
     radioEntrega = int(sys.argv[2])
     tiempoFinal = int(sys.argv[3])
-    print("")
-    print("#### Simulando con cantidad de repartidores = {0} y radio de entrega = {1} km #### ".format(cantidadRepartidores, radioEntrega))
-    print("")
-    print ("        ...        ")
-    print("")
+
+    # Checkeo modo debug
+    if len(sys.argv) == 5: 
+        if sys.argv[4] == "debug": 
+            debug = True
+    else: 
+            debug = False
+
+    print("\n#### Corriendo simulación con cantidad de repartidores = {0} y radio de entrega = {1} km #### \n".format(cantidadRepartidores, radioEntrega))
+    
     # Seteo condiciones iniciales
     tiempoActual = tiempoProximoPedido = 0
     cantidadEntregas = tiempoTotalEspera = 0 
@@ -65,26 +67,29 @@ def main():
 
     ## Inicio simulación ##
 
+    if not debug: print("Entregas: ", end = "")
+    
     while (tiempoActual < tiempoFinal):
 
-        print("")
+        if not debug: print(".", end = "")
 
+        if debug: print("\nNúmero entrega = {0}".format(cantidadEntregas))
         # Avanzo el tiempo
         tiempoActual = tiempoProximoPedido
-        print("Tiempo actual = {0}".format(tiempoActual))
+        if debug: print("Tiempo actual = {0}".format(tiempoActual))
 
         # Genero intervalo de próximo de pedido
         intervaloPedido = generarIntervaloPedido(tiempoActual)
-        print("Intervalo pedido = {0}".format(intervaloPedido))
+        if debug: print("Intervalo pedido = {0}".format(intervaloPedido))
         tiempoProximoPedido = tiempoActual + intervaloPedido
-        print("Tiempo próximo pedido = {0}".format(tiempoProximoPedido))
+        if debug: print("Tiempo próximo pedido = {0}".format(tiempoProximoPedido))
 
         # Genero intervalo de tiempo de entrega
         tiempoEntrega = generarTiempoEntrega(radioEntrega)
-        print("Intervalo entrega = {0}".format(tiempoEntrega))
+        if debug: print("Intervalo entrega = {0}".format(tiempoEntrega))
 
         for i in range(cantidadRepartidores):
-            print("Tiempo comprometido repartidor {0} = {1}".format(i, tiempoComprometidoRepartidores[i]))
+            if debug: print("Tiempo comprometido repartidor {0} = {1}".format(i, tiempoComprometidoRepartidores[i]))
 
         # Busco menor tiempo comprometido
         repartidor = buscarMenorTiempoComprometido(tiempoComprometidoRepartidores)
@@ -106,20 +111,18 @@ def main():
 
     ## Fin simulación ##
 
-    # Imprimo resultados
+    # Calculo resultados
     tiempoMedioEspera = calcularMaximoTA()
-    print("")
-    print("#### Resultados con cantidad de repartidores = {0} y radio de entrega = {1} km #### ".format(cantidadRepartidores, radioEntrega))####")
-    print("")
-    print("Tiempo maximo de atencion en el 90% de pedidos = {0} min".format(tiempoMedioEspera))
-    print("Cantidad de entregas = {0}".format(cantidadEntregas))
-
-    if tiempoMedioEspera < 35:
+    if tiempoMedioEspera < 35: 
         resultadoExitoso = "SI"
     else:
         resultadoExitoso = "NO"
-    print("Conclusión: {0} se logra tiempo medio de espera menor a 35 min".format(resultadoExitoso))
-    print("")
+
+    # Imprimo resultados
+    print("\n\n#### Resultados con cantidad de repartidores = {0} y radio de entrega = {1} km #### \n".format(cantidadRepartidores, radioEntrega))####")
+    print("Tiempo máximo de atención en el 90% de pedidos = {0} min".format(tiempoMedioEspera))
+    print("Cantidad de entregas = {0}".format(cantidadEntregas))
+    print("Conclusión: {0} se logra tiempo medio de espera menor a 35 min\n".format(resultadoExitoso))
 
 if __name__ == "__main__":
     try: 
