@@ -28,7 +28,7 @@ def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     menorTiempoComprometido = tiempoComprometidoRepartidores.index(min(tiempoComprometidoRepartidores))
     return menorTiempoComprometido
 
-def calcularMaximoTiempoEntrega(listaTiemposEntrega):
+def calcularTiempoMaximoEntrega(listaTiemposEntrega):
     # Calcula el máximo tiempo de atención en el que cae el 90% de los pedidos
     listaTiemposEntrega.sort()
     index = round(len(listaTiemposEntrega) * 0.9) - 1
@@ -56,13 +56,13 @@ def main():
     
     # Seteo condiciones iniciales
     tiempoActual = tiempoProximoPedido = 0
-    cantidadEntregas = tiempoTotalEspera = 0 
+    cantidadEntregas = tiempoMaximoEntrega = 0 
     tiempoComprometidoRepartidores = []
     listaTiemposEntrega = []
 
     for i in range(cantidadRepartidores):
-        tiempoComprometidoRepartidores.append(randint(10,30))
-        # tiempoComprometidoRepartidores.append(0)
+        tiempoComprometidoRepartidores.append(randint(0,60))
+        # tiempoComprometidoRepartidores.append(0)
 
     ## Inicio simulación ##
 
@@ -73,6 +73,7 @@ def main():
         if not debug: print(".", end = "")
 
         if debug: print("\nNúmero entrega = {0}".format(cantidadEntregas))
+
         # Avanzo el tiempo
         tiempoActual = tiempoProximoPedido
         if debug: print("Tiempo actual = {0}".format(tiempoActual))
@@ -92,38 +93,31 @@ def main():
 
         # Busco menor tiempo comprometido
         repartidor = buscarMenorTiempoComprometido(tiempoComprometidoRepartidores)
-
         
         if tiempoActual > tiempoComprometidoRepartidores[repartidor]:
             # Hay repartidores ociosos -> toman pedido inmediatamente
             tiempoComprometidoRepartidores[repartidor] = tiempoActual + tiempoEntrega
             listaTiemposEntrega.append(tiempoEntrega)
-            tiempoTotalEspera = tiempoTotalEspera + tiempoEntrega
             cantidadEntregas += 1
 
         else:
             # No hay repartidores ociosos -> el pedido se demora
             tiempoComprometidoRepartidores[repartidor] = tiempoComprometidoRepartidores[repartidor] + tiempoEntrega
-            tiempoTotalEspera = tiempoTotalEspera + tiempoComprometidoRepartidores[repartidor] - tiempoActual
             listaTiemposEntrega.append((tiempoComprometidoRepartidores[repartidor] - tiempoActual))
             cantidadEntregas += 1
 
     ## Fin simulación ##
 
     # Calculo resultados
-    tiempoMaximoEspera = calcularMaximoTiempoEntrega(listaTiemposEntrega)
-    if debug: print("\nLista de tiempos de entregas: ", listaTiemposEntrega, end = "")
+    tiempoMaximoEntrega = calcularTiempoMaximoEntrega(listaTiemposEntrega)
+    resultadoExitoso = "SI" if (tiempoMaximoEntrega < 35) else "NO"
     
-    if tiempoMaximoEspera < 35: 
-        resultadoExitoso = "SI"
-    else:
-        resultadoExitoso = "NO"
-
     # Imprimo resultados
+    if debug: print("\nLista de tiempos de entregas: ", listaTiemposEntrega, end = "")
     print("\n\n#### Resultados con cantidad de repartidores = {0} y radio de entrega = {1} km #### \n".format(cantidadRepartidores, radioEntrega))####")
-    print("Tiempo máximo de atención en el 90% de pedidos = {0} min".format(tiempoMaximoEspera))
+    print("Tiempo máximo de atención en el 90% de pedidos = {0} min".format(tiempoMaximoEntrega))
     print("Cantidad de entregas = {0}".format(cantidadEntregas))
-    print("Conclusión: {0} se logra tiempo máximo de espera menor a 35 min\n".format(resultadoExitoso))
+    print("Conclusión: {0} se logra tiempo máximo de entrega menor a 35 min\n".format(resultadoExitoso))
 
 if __name__ == "__main__":
     try: 
