@@ -90,8 +90,8 @@ def main():
     listaTiemposEntrega = []
 
     for i in range(cantidadRepartidores):
-        tiempoComprometidoRepartidores.append(randint(0,60))
-        # tiempoComprometidoRepartidores.append(0)
+        # tiempoComprometidoRepartidores.append(randint(0,60))
+        tiempoComprometidoRepartidores.append(0)
 
     ## Inicio simulación ##
 
