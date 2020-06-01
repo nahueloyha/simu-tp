@@ -32,7 +32,7 @@ def generarIntervaloPedido(tiempoActual, radio):
     r = uniform(0, 1)
     superficie = pi * radio * radio
     superficie_cobertura_maxima_km2 = 1400.0
-    # distribución lineal
+    # Distribución lineal
     frecuencia_arribos_por_hora = (weekly_array[int(tiempoActual) % 168] * (superficie / superficie_cobertura_maxima_km2) ) * (0.9 + 0.2 * r)
     intervalo_arribo_minutos = 60.0 / frecuencia_arribos_por_hora
     return intervalo_arribo_minutos
@@ -41,13 +41,8 @@ def generarTiempoEntrega(radio):
     velocidad_promedio_kmh = 20.0
     minimo_tiempo_atencion_minutos = 5.0 #tiempo record
     peor_tiempo_minutos = (4.0 * radio) / (velocidad_promedio_kmh/60.0)
-    #distribución Pareto
-    #tiempoEntregaMinutos = pareto.rvs(minimo_tiempo_atencion_minutos, loc=1, scale=peor_tiempo_minutos, size=1, random_state=None)
-    #tiempoEntregaMinutos = pareto.rvs(1, 1)
-    #print("\n=>{0}\n".format(tiempoEntregaMinutos))
-
     r = uniform(0, 1)
-    #distribución lineal
+    # Distribución lineal
     tiempoEntregaMinutos = minimo_tiempo_atencion_minutos + r * peor_tiempo_minutos
     return tiempoEntregaMinutos
 
