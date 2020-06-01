@@ -29,7 +29,7 @@ def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     return menorTiempoComprometido
 
 def calcularTiempoMaximoEntrega(listaTiemposEntrega):
-    # Calcula el máximo tiempo de atención en el que cae el 90% de los pedidos
+    # Calcula el máximo tiempo de entrega en el que cae el 90% de los pedidos
     listaTiemposEntrega.sort()
     index = round(len(listaTiemposEntrega) * 0.9) - 1
     return listaTiemposEntrega[index]
@@ -115,7 +115,7 @@ def main():
     # Imprimo resultados
     if debug: print("\nLista de tiempos de entregas: ", listaTiemposEntrega, end = "")
     print("\n\n#### Resultados con cantidad de repartidores = {0} y radio de entrega = {1} km #### \n".format(cantidadRepartidores, radioEntrega))####")
-    print("Tiempo máximo de atención en el 90% de pedidos = {0} min".format(tiempoMaximoEntrega))
+    print("Tiempo máximo de entrega en el 90% de pedidos = {0} min".format(tiempoMaximoEntrega))
     print("Cantidad de entregas = {0}".format(cantidadEntregas))
     print("Conclusión: {0} se logra tiempo máximo de entrega menor a 35 min\n".format(resultadoExitoso))
 
