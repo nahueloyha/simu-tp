@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+from random import uniform
 from random import randint
 
 def usage():
@@ -18,10 +19,14 @@ def generarIntervaloPedido(tiempoActual):
     intervaloPedidoRandom = randint(5,20)
     return intervaloPedidoRandom
 
-def generarTiempoEntrega(radioEntrega):
-    # Acá iría la FDP de tiempoEntrega
-    tiempoEntregaRandom = randint(10,20) * radioEntrega
-    return tiempoEntregaRandom
+def generarTiempoEntrega(radio):
+    velocidad_promedio_kmh = 9
+    minimo_tiempo_atencion_minutos = 18 #tiempo record
+    peor_tiempo = (4 * radio) / velocidad_promedio_kmh
+    r = uniform(0, 1)
+    #distribución lineal
+    tiempoEntrega = minimo_tiempo_atencion_minutos + r * peor_tiempo
+    return tiempoEntrega
 
 def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     # Busco el repartidor con menor tiempo comprometido
