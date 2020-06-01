@@ -38,8 +38,8 @@ def generarIntervaloPedido(tiempoActual, radio):
     return intervalo_arribo_minutos
 
 def generarTiempoEntrega(radio):
-    velocidad_promedio_kmh = 9.0
-    minimo_tiempo_atencion_minutos = 17.0 #tiempo record
+    velocidad_promedio_kmh = 20.0
+    minimo_tiempo_atencion_minutos = 10.0 #tiempo record
     peor_tiempo_minutos = (4.0 * radio) / (velocidad_promedio_kmh/60.0)
     #distribución Pareto
     #tiempoEntregaMinutos = pareto.rvs(minimo_tiempo_atencion_minutos, loc=1, scale=peor_tiempo_minutos, size=1, random_state=None)
