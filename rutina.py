@@ -4,6 +4,10 @@ from random import uniform
 from random import randint
 from math import pi
 
+import numpy as np
+from scipy.stats import cauchy
+from scipy.stats import pareto
+
 weekly_array = [100,	100,	100,	100,	100,	100,	100,	100,	300,	400,	400,	400,	500,	500,	300,	300,	300,	300,	300,	300,	500,	800,	700,	200,	
 500,	200,	200,	200,	200,	200,	200,	200,	300,	500,	500,	500,	7000,	7000,	500,	500,	500,	500,	500,	500,	7000,	7000,	7000,	500,	
 500,	200,	200,	200,	200,	200,	200,	200,	300,	500,	500,	500,	7000,	7000,	500,	500,	500,	500,	500,	500,	6000,	6000,	6000,	500,	
@@ -27,20 +31,25 @@ def usage():
 def generarIntervaloPedido(tiempoActual, radio):
     r = uniform(0, 1)
     superficie = pi * radio * radio
-    superficie_cobertura_maxima_km2 = 1400
+    superficie_cobertura_maxima_km2 = 1400.0
     # distribución lineal
     frecuencia_arribos_por_hora = (weekly_array[int(tiempoActual) % 168] * (superficie / superficie_cobertura_maxima_km2) ) * (0.9 + 0.2 * r)
-    intervalo_arribo_segundos = 3600000 / frecuencia_arribos_por_hora
-    return intervalo_arribo_segundos
+    intervalo_arribo_minutos = 60.0 / frecuencia_arribos_por_hora
+    return intervalo_arribo_minutos
 
 def generarTiempoEntrega(radio):
-    velocidad_promedio_kmh = 9
-    minimo_tiempo_atencion_minutos = 18 #tiempo record
-    peor_tiempo = (4 * radio) / velocidad_promedio_kmh
+    velocidad_promedio_kmh = 9.0
+    minimo_tiempo_atencion_minutos = 17.0 #tiempo record
+    peor_tiempo_minutos = (4.0 * radio) / (velocidad_promedio_kmh/60.0)
+    #distribución Pareto
+    #tiempoEntregaMinutos = pareto.rvs(minimo_tiempo_atencion_minutos, loc=1, scale=peor_tiempo_minutos, size=1, random_state=None)
+    #tiempoEntregaMinutos = pareto.rvs(1, 1)
+    #print("\n=>{0}\n".format(tiempoEntregaMinutos))
+
     r = uniform(0, 1)
     #distribución lineal
-    tiempoEntrega = minimo_tiempo_atencion_minutos + r * peor_tiempo
-    return tiempoEntrega
+    tiempoEntregaMinutos = minimo_tiempo_atencion_minutos + r * peor_tiempo_minutos
+    return tiempoEntregaMinutos
 
 def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     # Busco el repartidor con menor tiempo comprometido
@@ -61,7 +70,7 @@ def main():
     # Leo argumentos
     cantidadRepartidores = int(sys.argv[1])
     radioEntrega = int(sys.argv[2])
-    tiempoFinal = int(sys.argv[3])
+    tiempoFinal = float(sys.argv[3]) #minutos
 
     # Chequeo modo debug
     if len(sys.argv) == 5: 
@@ -74,13 +83,15 @@ def main():
     print("\n#### Corriendo simulación con cantidad de repartidores = {0} y radio de entrega = {1} km ####".format(cantidadRepartidores, radioEntrega))
     
     # Seteo condiciones iniciales
-    tiempoActual = tiempoProximoPedido = 0
-    cantidadEntregas = tiempoMaximoEntrega = 0 
+    tiempoActual = tiempoProximoPedido = 0.0
+    cantidadEntregas = 0
+    tiempoMaximoEntrega = 0.0
     tiempoComprometidoRepartidores = []
     listaTiemposEntrega = []
 
     for i in range(cantidadRepartidores):
-        tiempoComprometidoRepartidores.append(0)
+        tiempoComprometidoRepartidores.append(randint(0,60))
+        # tiempoComprometidoRepartidores.append(0)
 
     ## Inicio simulación ##
 
