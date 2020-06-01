@@ -1,6 +1,17 @@
 #!/usr/bin/env python3
 import sys
+from random import uniform
 from random import randint
+from math import pi
+
+weekly_array = [100,	100,	100,	100,	100,	100,	100,	100,	300,	400,	400,	400,	500,	500,	300,	300,	300,	300,	300,	300,	500,	800,	700,	200,	
+500,	200,	200,	200,	200,	200,	200,	200,	300,	500,	500,	500,	7000,	7000,	500,	500,	500,	500,	500,	500,	7000,	7000,	7000,	500,	
+500,	200,	200,	200,	200,	200,	200,	200,	300,	500,	500,	500,	7000,	7000,	500,	500,	500,	500,	500,	500,	6000,	6000,	6000,	500,	
+500,	200,	200,	200,	200,	200,	200,	200,	300,	500,	500,	500,	6000,	6000,	500,	500,	500,	500,	500,	500,	6000,	6000,	6000,	500,	
+500,	200,	200,	200,	200,	200,	200,	200,	300,	500,	500,	500,	6000,	6000,	500,	500,	500,	500,	500,	500,	6000,	6000,	6000,	500,	
+500,	200,	200,	200,	200,	200,	200,	200,	300,	300,	500,	500,	6000,	6000,	500,	500,	500,	500,	500,	500,	5000,	5000,	6000,	500,	
+500,	200,	200,	200,	200,	200,	200,	200,	300,	400,	400,	400,	1000,	1000,	500,	500,	500,	500,	500,	500,	1000,	1000,	1000,	500]
+
 
 def usage():
     print('''
@@ -13,15 +24,23 @@ def usage():
     '''
     )
 
-def generarIntervaloPedido(tiempoActual):
-    # Acá iría la FDP de intervaloPedido
-    intervaloPedidoRandom = randint(5,20)
-    return intervaloPedidoRandom
+def generarIntervaloPedido(tiempoActual, radio):
+    r = uniform(0, 1)
+    superficie = pi * radio * radio
+    superficie_cobertura_maxima_km2 = 1400
+    # distribución lineal
+    frecuencia_arribos_por_hora = (weekly_array[int(tiempoActual) % 168] * (superficie / superficie_cobertura_maxima_km2) ) * (0.9 + 0.2 * r)
+    intervalo_arribo_segundos = 3600000 / frecuencia_arribos_por_hora
+    return intervalo_arribo_segundos
 
-def generarTiempoEntrega(radioEntrega):
-    # Acá iría la FDP de tiempoEntrega
-    tiempoEntregaRandom = randint(10,20) * radioEntrega
-    return tiempoEntregaRandom
+def generarTiempoEntrega(radio):
+    velocidad_promedio_kmh = 9
+    minimo_tiempo_atencion_minutos = 18 #tiempo record
+    peor_tiempo = (4 * radio) / velocidad_promedio_kmh
+    r = uniform(0, 1)
+    #distribución lineal
+    tiempoEntrega = minimo_tiempo_atencion_minutos + r * peor_tiempo
+    return tiempoEntrega
 
 def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
     # Busco el repartidor con menor tiempo comprometido
@@ -78,7 +97,7 @@ def main():
         if debug: print("Tiempo actual = {0}".format(tiempoActual))
 
         # Genero intervalo de próximo de pedido
-        intervaloPedido = generarIntervaloPedido(tiempoActual)
+        intervaloPedido = generarIntervaloPedido(tiempoActual, radioEntrega)
         if debug: print("Intervalo pedido = {0}".format(intervaloPedido))
         tiempoProximoPedido = tiempoActual + intervaloPedido
         if debug: print("Tiempo próximo pedido = {0}".format(tiempoProximoPedido))
