@@ -39,7 +39,7 @@ def generarIntervaloPedido(tiempoActual, radio):
 
 def generarTiempoEntrega(radio):
     velocidad_promedio_kmh = 20.0
-    minimo_tiempo_atencion_minutos = 10.0 #tiempo record
+    minimo_tiempo_atencion_minutos = 5.0 #tiempo record
     peor_tiempo_minutos = (4.0 * radio) / (velocidad_promedio_kmh/60.0)
     #distribución Pareto
     #tiempoEntregaMinutos = pareto.rvs(minimo_tiempo_atencion_minutos, loc=1, scale=peor_tiempo_minutos, size=1, random_state=None)
@@ -122,6 +122,7 @@ def main():
 
         # Busco menor tiempo comprometido
         repartidor = buscarMenorTiempoComprometido(tiempoComprometidoRepartidores)
+        if debug: print ("Asigno repartidor {0}".format(repartidor))
         
         if tiempoActual > tiempoComprometidoRepartidores[repartidor]:
             # Hay repartidores ociosos -> toman pedido inmediatamente
