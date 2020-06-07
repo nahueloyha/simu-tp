@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 import sys
-from random import uniform
 from random import randint
 from math import pi
-
-import numpy as np
-from scipy.stats import cauchy
-from scipy.stats import pareto
-
 from scipy.stats import beta
 
 weekly_array = [100,	100,	100,	100,	100,	100,	100,	100,	300,	400,	400,	400,	500,	500,	300,	300,	300,	300,	300,	300,	500,	800,	700,	200,	
@@ -17,7 +11,6 @@ weekly_array = [100,	100,	100,	100,	100,	100,	100,	100,	300,	400,	400,	400,	500,
 500,	200,	200,	200,	200,	200,	200,	200,	300,	500,	500,	500,	6000,	6000,	500,	500,	500,	500,	500,	500,	6000,	6000,	6000,	500,	
 500,	200,	200,	200,	200,	200,	200,	200,	300,	300,	500,	500,	6000,	6000,	500,	500,	500,	500,	500,	500,	5000,	5000,	6000,	500,	
 500,	200,	200,	200,	200,	200,	200,	200,	300,	400,	400,	400,	1000,	1000,	500,	500,	500,	500,	500,	500,	1000,	1000,	1000,	500]
-
 
 def usage():
     print('''
@@ -31,26 +24,24 @@ def usage():
     )
 
 def generarIntervaloPedido(tiempoActual, radio):
-    #distribucion beta
-    a = 2
-    b = 2
-    r = beta.rvs(a, b)
     superficie = pi * radio * radio
     superficie_cobertura_maxima_km2 = 1400.0
-    # Distribución lineal
-    frecuencia_arribos_por_hora = (weekly_array[int(tiempoActual) % 168] * (superficie / superficie_cobertura_maxima_km2) ) * r
-    intervalo_arribo_minutos = 60.0 / frecuencia_arribos_por_hora
-    return intervalo_arribo_minutos
+    # Distribucion beta
+    a = b = 2
+    r = beta.rvs(a, b)
+    frecuencia_pedidos_por_hora = (weekly_array[int(tiempoActual) % 168] * (superficie / superficie_cobertura_maxima_km2)) * r
+    intervalo_pedidos_minutos = 60.0 / frecuencia_pedidos_por_hora
+    return intervalo_pedidos_minutos
 
 def generarTiempoEntrega(radio):
     velocidad_promedio_kmh = 9.0
-    minimo_tiempo_atencion_minutos = 17.0 #tiempo record
-    peor_tiempo_minutos = (4.0 * radio) / (velocidad_promedio_kmh/60.0)
-    #distribucion beta
+    minimo_tiempo_atencion_minutos = 17.0 # tiempo récord
+    peor_tiempo_minutos = (4.0 * radio) / (velocidad_promedio_kmh / 60.0)
+    # Distribucion beta
     a = 2
     b = 15
     r = beta.rvs(a, b)
-    tiempoEntregaMinutos = minimo_tiempo_atencion_minutos + r * peor_tiempo_minutos
+    tiempoEntregaMinutos = minimo_tiempo_atencion_minutos + (r * peor_tiempo_minutos)
     return tiempoEntregaMinutos
 
 def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
@@ -109,7 +100,7 @@ def main():
         tiempoActual = tiempoProximoPedido
         if debug: print("Tiempo actual = {0}".format(tiempoActual))
 
-        # Genero intervalo de próximo de pedido
+        # Genero intervalo de próximo pedido
         intervaloPedido = generarIntervaloPedido(tiempoActual, radioEntrega)
         if debug: print("Intervalo pedido = {0}".format(intervaloPedido))
         tiempoProximoPedido = tiempoActual + intervaloPedido
