@@ -3,6 +3,7 @@ import sys
 from random import randint
 from math import pi
 from scipy.stats import beta
+from statistics import mean
 
 weekly_array = [100,	100,	100,	100,	100,	100,	100,	100,	300,	400,	400,	400,	500,	500,	300,	300,	300,	300,	300,	300,	500,	800,	700,	200,	
 500,	200,	200,	200,	200,	200,	200,	200,	300,	500,	500,	500,	7000,	7000,	500,	500,	500,	500,	500,	500,	7000,	7000,	7000,	500,	
@@ -27,7 +28,8 @@ def generarIntervaloPedido(tiempoActual, radio):
     superficie = pi * radio * radio
     superficie_cobertura_maxima_km2 = 1400.0
     # Distribucion beta
-    a = b = 2
+    a = 17
+    b = 41
     r = beta.rvs(a, b)
     frecuencia_pedidos_por_hora = (weekly_array[int(tiempoActual) % 168] * (superficie / superficie_cobertura_maxima_km2)) * r
     intervalo_pedidos_minutos = 60.0 / frecuencia_pedidos_por_hora
@@ -35,13 +37,14 @@ def generarIntervaloPedido(tiempoActual, radio):
 
 def generarTiempoEntrega(radio):
     velocidad_promedio_kmh = 9.0
-    minimo_tiempo_atencion_minutos = 17.0 # tiempo récord
+    mejor_tiempo_atencion_minutos = 17.0 # tiempo récord
     peor_tiempo_minutos = (4.0 * radio) / (velocidad_promedio_kmh / 60.0)
     # Distribucion beta
-    a = 2
-    b = 15
-    r = beta.rvs(a, b)
-    tiempoEntregaMinutos = minimo_tiempo_atencion_minutos + (r * peor_tiempo_minutos)
+    a = 17
+    b = 41
+    r = beta.rvs(a, b, loc=mejor_tiempo_atencion_minutos, scale=peor_tiempo_minutos)
+    tiempoEntregaMinutos = r
+    #print("=>Tiempo entrega: {0}\n".format(tiempoEntregaMinutos))
     return tiempoEntregaMinutos
 
 def buscarMenorTiempoComprometido(tiempoComprometidoRepartidores):
@@ -82,9 +85,8 @@ def main():
     tiempoComprometidoRepartidores = []
     listaTiemposEntrega = []
 
-    for i in range(cantidadRepartidores):
-        # tiempoComprometidoRepartidores.append(randint(0,60))
-        tiempoComprometidoRepartidores.append(0)
+    tiempoComprometidoRepartidores = [0] * cantidadRepartidores
+    viajesRepartidores = [0] * cantidadRepartidores
 
     ## Inicio simulación ##
 
@@ -115,6 +117,7 @@ def main():
 
         # Busco menor tiempo comprometido
         repartidor = buscarMenorTiempoComprometido(tiempoComprometidoRepartidores)
+        viajesRepartidores[repartidor] = viajesRepartidores[repartidor] + 1
         if debug: print ("Asigno repartidor {0}".format(repartidor))
         
         if tiempoActual > tiempoComprometidoRepartidores[repartidor]:
@@ -133,12 +136,16 @@ def main():
 
     # Calculo resultados
     tiempoMaximoEntrega = calcularTiempoMaximoEntrega(listaTiemposEntrega)
+    promedioTiemposEntrega = mean(listaTiemposEntrega)
     resultadoExitoso = "SI" if (tiempoMaximoEntrega < 35) else "NO"
     
     # Imprimo resultados
     if debug: print("\nLista de tiempos de entregas: ", listaTiemposEntrega, end = "")
+    #for i in range(cantidadRepartidores):
+    #    print("Cantidad de entregas repartidor {0} = {1}".format(i, viajesRepartidores[i]))
     print("\n\n#### Resultados con cantidad de repartidores = {0} y radio de entrega = {1} km #### \n".format(cantidadRepartidores, radioEntrega))####")
     print("Tiempo máximo de entrega en el 90% de pedidos = {0} min".format(tiempoMaximoEntrega))
+    print("Tiempo promedio de entrega = {0} min".format(promedioTiemposEntrega))
     print("Cantidad de entregas = {0}".format(cantidadEntregas))
     print("Conclusión: {0} se logra tiempo máximo de entrega menor a 35 min\n".format(resultadoExitoso))
 
